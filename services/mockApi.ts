@@ -72,6 +72,34 @@ const MOCK_EVENTS: FeedEvent[] = [
         title: 'Open Enrollment',
         body: 'Benefits selection closes this Friday. Don\'t forget!',
         timestamp: '2 days ago'
+    },
+    {
+        id: '5',
+        type: EventType.CELEBRATION,
+        title: 'Lunch & Learn: AI Tools',
+        body: 'Join us in the main conference room for pizza and AI demos.',
+        timestamp: 'Today, 12:00 PM'
+    },
+    {
+        id: '6',
+        type: EventType.OPS,
+        title: 'System Update Completed',
+        body: 'The CRM migration was successful. No downtime expected.',
+        timestamp: 'Today, 8:00 AM'
+    },
+    {
+        id: '7',
+        type: EventType.BIRTHDAY,
+        title: 'Marcus\'s Work Anniversary',
+        body: 'Celebrating 5 years with the engineering team! 🎉',
+        timestamp: '3 days ago'
+    },
+    {
+        id: '8',
+        type: EventType.HR,
+        title: 'New Policy: Wellness Stipend',
+        body: 'Check your email for details on the new 2025 wellness budget.',
+        timestamp: 'Last Week'
     }
 ];
 
@@ -87,10 +115,10 @@ export const mockSearch = async (query: string, filter: string): Promise<SearchR
             const q = query.toLowerCase();
             const filtered = MOCK_DOCS.filter(doc => {
                 const matchesQuery = doc.title.toLowerCase().includes(q) || doc.snippet.toLowerCase().includes(q);
-                const matchesFilter = filter === 'all' || 
-                                     (filter === 'docs' && doc.type === DocType.DOC) ||
-                                     (filter === 'sheets' && doc.type === DocType.SHEET) ||
-                                     (filter === 'decks' && doc.type === DocType.SLIDE);
+                const matchesFilter = filter === 'all' ||
+                    (filter === 'docs' && doc.type === DocType.DOC) ||
+                    (filter === 'sheets' && doc.type === DocType.SHEET) ||
+                    (filter === 'decks' && doc.type === DocType.SLIDE);
                 return matchesQuery && matchesFilter;
             });
             resolve(filtered);

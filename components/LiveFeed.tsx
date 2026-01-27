@@ -34,9 +34,7 @@ export const LiveFeed: React.FC = () => {
         </div>
       </div>
 
-      <button className="w-full py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-800 border border-slate-200 hover:border-slate-300 rounded-xl transition-all mb-4 sm:mb-8 bg-white/50 backdrop-blur-sm tracking-wide uppercase hover:bg-white hover:shadow-sm active:scale-[0.98]">
-        View All History
-      </button>
+
 
       {/* Agency Logos */}
       <div className="flex items-end justify-center gap-6 sm:gap-8 opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500 pt-6 sm:pt-8 border-t border-slate-200 mt-auto saturate-0 hover:saturate-100 pb-safe">
