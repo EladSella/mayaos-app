@@ -38,7 +38,7 @@ export const BigRevolutionSlider: React.FC = () => {
     const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
 
     return (
-        <div className="w-full relative h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl mb-8 group">
+        <div className="w-full relative h-56 sm:h-64 md:h-80 rounded-2xl overflow-hidden shadow-xl mb-6 sm:mb-8 group">
             {/* Slides */}
             {SLIDES.map((slide, index) => (
                 <div
@@ -54,42 +54,42 @@ export const BigRevolutionSlider: React.FC = () => {
                     />
 
                     {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/50 to-transparent" />
 
                     {/* Content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 text-white">
-                        <h2 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight drop-shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-700">
+                    <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 md:p-12 text-white">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2 tracking-tight drop-shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-700">
                             {slide.title}
                         </h2>
-                        <p className="text-lg text-slate-200 max-w-2xl drop-shadow-md animate-in fade-in slide-in-from-bottom-3 duration-700 delay-100">
+                        <p className="text-sm sm:text-base md:text-lg text-slate-200 max-w-2xl drop-shadow-md animate-in fade-in slide-in-from-bottom-3 duration-700 delay-100 line-clamp-2 md:line-clamp-none">
                             {slide.description}
                         </p>
                     </div>
                 </div>
             ))}
 
-            {/* Navigation Arrows (Visible on Hover) */}
+            {/* Navigation Arrows (Visible on Hover/Mobile Touch) */}
             <button
                 onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 hover:scale-110"
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 p-1.5 sm:p-2 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
             >
-                <ChevronLeft className="w-6 h-6" />
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
             <button
                 onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 hover:scale-110"
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 p-1.5 sm:p-2 rounded-full bg-black/30 hover:bg-black/50 text-white backdrop-blur-sm transition-all opacity-100 md:opacity-0 md:group-hover:opacity-100 active:scale-95"
             >
-                <ChevronRight className="w-6 h-6" />
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
 
             {/* Dots */}
-            <div className="absolute bottom-6 right-8 z-20 flex gap-2">
+            <div className="absolute bottom-4 sm:bottom-6 right-4 sm:right-8 z-20 flex gap-2">
                 {SLIDES.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setCurrentSlide(index)}
-                        className={`w-2.5 h-2.5 rounded-full transition-all duration-300 shadow-lg
-              ${index === currentSlide ? 'bg-white w-8' : 'bg-white/50 hover:bg-white/80'}
+                        className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-300 shadow-lg
+              ${index === currentSlide ? 'bg-white w-6 sm:w-8' : 'bg-white/50 hover:bg-white/80'}
             `}
                     />
                 ))}

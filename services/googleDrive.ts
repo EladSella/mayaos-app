@@ -3,8 +3,26 @@ import { SearchResult, DocType } from '../types';
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-const SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
+const SCOPES = 'https://www.googleapis.com/auth/drive.readonly https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email';
 const TARGET_DRIVE_ID = import.meta.env.VITE_TARGET_DRIVE_ID;
+const SESSION_KEY = 'maya_auth_session';
+
+export const saveSession = (user: any) => {
+    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+};
+
+export const getSession = (): any | null => {
+    try {
+        const session = localStorage.getItem(SESSION_KEY);
+        return session ? JSON.parse(session) : null;
+    } catch (e) {
+        return null;
+    }
+};
+
+export const clearSession = () => {
+    localStorage.removeItem(SESSION_KEY);
+};
 
 let tokenClient: any;
 let gapiInited = false;
@@ -52,16 +70,34 @@ const checkAuth = async (callback: (user: any) => void) => {
     // In a real app, we'd manage token expiration
     const token = (window as any).gapi?.client?.getToken();
     if (token && gapiInited && gisInited) {
-        // Fetch user info using Drive API "about" or simple profile if available. 
-        // For simplicity, we just return a dummy user object if token exists, 
-        // or we could fetch the user's name/photo via People API if scope added.
-        // Here we just signal "connected"
-        callback({
-            id: 'google-user',
-            name: 'Google User',
-            email: 'user@google.com',
-            avatar: 'https://lh3.googleusercontent.com/a/default-user=s96-c'
-        });
+        try {
+            // Fetch real user info from Google's UserInfo Endpoint
+            const response = await (window as any).gapi.client.request({
+                'path': 'https://www.googleapis.com/oauth2/v3/userinfo',
+            });
+
+            const profile = response.result;
+
+            const user = {
+                id: profile.sub,
+                name: profile.name,
+                email: profile.email,
+                avatar: profile.picture
+            };
+            saveSession(user);
+            callback(user);
+        } catch (error) {
+            console.warn("Failed to fetch user profile, falling back to basic auth", error);
+            // Fallback to basic user if profile fetch fails (e.g. scope issues)
+            const fallbackUser = {
+                id: 'google-user',
+                name: 'Team Member',
+                email: 'user@google.com',
+                avatar: 'data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI1MCIgZmlsbD0iIzIyYzU1ZSIgLz4KPC9zdmc+'
+            };
+            saveSession(fallbackUser);
+            callback(fallbackUser);
+        }
     }
 };
 
@@ -77,11 +113,14 @@ export const handleAuthClick = () => {
 
 export const handleSignOutClick = (callback: () => void) => {
     const token = (window as any).gapi.client.getToken();
+    clearSession();
     if (token !== null) {
         (window as any).google.accounts.oauth2.revoke(token.access_token, () => {
             (window as any).gapi.client.setToken('');
             callback();
         });
+    } else {
+        callback();
     }
 };
 
